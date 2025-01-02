@@ -48,7 +48,7 @@ void infixToPostfix(const char *infix, char *postfix) {
         if (isalnum(ch)) {
             postfix[j++] = ch;
         } else if (ch == '(') {
-            // Push '(' onto stack
+            
             push(ch);
         } else if (ch == ')') {
             while (!isEmpty() && peek() != '(') {
