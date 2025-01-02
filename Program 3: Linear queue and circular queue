@@ -1,0 +1,124 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX 100
+int linearQueue[MAX];
+int frontLinear = -1, rearLinear = -1;
+int circularQueue[MAX];
+int frontCircular = -1, rearCircular = -1;
+void enqueueLinear(int value) {
+    if (rearLinear == MAX - 1) {
+        printf("Linear Queue overflow\n");
+        return;
+    }
+    if (frontLinear == -1) {
+        frontLinear = 0;
+    }
+    linearQueue[++rearLinear] = value;
+    printf("Enqueued %d to Linear Queue\n", value);
+}
+
+void dequeueLinear() {
+    if (frontLinear == -1 || frontLinear > rearLinear) {
+        printf("Linear Queue underflow\n");
+        return;
+    }
+    printf("Dequeued %d from Linear Queue\n", linearQueue[frontLinear++]);
+    if (frontLinear > rearLinear) {
+        frontLinear = rearLinear = -1;
+    }
+}
+void displayLinear() {
+    if (frontLinear == -1) {
+        printf("Linear Queue is empty\n");
+        return;
+    }
+    printf("Linear Queue: ");
+    for (int i = frontLinear; i <= rearLinear; i++) {
+        printf("%d ", linearQueue[i]);
+    }
+    printf("\n");
+}
+void enqueueCircular(int value) {
+    if ((rearCircular + 1) % MAX == frontCircular) {
+        printf("Circular Queue overflow\n");
+        return;
+    }
+    if (frontCircular == -1) {
+        frontCircular = 0;
+    }
+    rearCircular = (rearCircular + 1) % MAX;
+    circularQueue[rearCircular] = value;
+    printf("Enqueued %d to Circular Queue\n", value);
+}
+
+void dequeueCircular() {
+    if (frontCircular == -1) {
+        printf("Circular Queue underflow\n");
+        return;
+    }
+    printf("Dequeued %d from Circular Queue\n", circularQueue[frontCircular]);
+    if (frontCircular == rearCircular) {
+        frontCircular = rearCircular = -1;
+    } else {
+        frontCircular = (frontCircular + 1) % MAX;
+    }
+}
+
+void displayCircular() {
+    if (frontCircular == -1) {
+        printf("Circular Queue is empty\n");
+        return;
+    }
+    printf("Circular Queue: ");
+    int i = frontCircular;
+    while (1) {
+        printf("%d ", circularQueue[i]);
+        if (i == rearCircular) {
+            break;
+        }
+        i = (i + 1) % MAX;
+    }
+    printf("\n");
+}
+
+int main() {
+    int choice, value;
+
+    while (1) {
+        printf("\n1. Enqueue Linear\n2. Dequeue Linear\n3. Display Linear\n");
+        printf("4. Enqueue Circular\n5. Dequeue Circular\n6. Display Circular\n7. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter value to enqueue in Linear Queue: ");
+                scanf("%d", &value);
+                enqueueLinear(value);
+                break;
+            case 2:
+                dequeueLinear();
+                break;
+            case 3:
+                displayLinear();
+                break;
+            case 4:
+                printf("Enter value to enqueue in Circular Queue: ");
+                scanf("%d", &value);
+                enqueueCircular(value);
+                break;
+            case 5:
+                dequeueCircular();
+                break;
+            case 6:
+                displayCircular();
+                break;
+            case 7:
+                exit(0);
+            default:
+                printf("Invalid choice!\n");
+        }
+    }
+
+    return 0;
+}
