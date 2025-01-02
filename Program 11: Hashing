@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX 100 
+typedef struct Employee {
+	int key; 
+	char name[50];
+	int age;
+} Employee;
+
+typedef struct HashTable {
+	Employee* table[MAX];
+} HashTable;
+
+void initHashTable(HashTable* ht, int m) {
+	for (int i = 0; i < m; i++) {
+    	ht->table[i] = NULL;
+	}
+}
+int hashFunction(int key, int m) {
+	return key % m;
+}
+void insertEmployee(HashTable* ht, int m, Employee* emp) {
+	int index = hashFunction(emp->key, m);
+	while (ht->table[index] != NULL) {
+    	index = (index + 1) % m; // Linear probing
+	}
+
+	ht->table[index] = emp;
+}
+Employee* searchEmployee(HashTable* ht, int m, int key) {
+	int index = hashFunction(key, m);
+	int originalIndex = index;
+
+	while (ht->table[index] != NULL) {
+    	if (ht->table[index]->key == key) {
+        	return ht->table[index];
+    	}
+    	index = (index + 1) % m;
+    	if (index == originalIndex) {
+        	break; 
+    	}
+	}
+
+	return NULL; 
+}
+
+void displayHashTable(HashTable* ht, int m) {
+	printf("\nHash Table:\n");
+	for (int i = 0; i < m; i++) {
+    	if (ht->table[i] != NULL) {
+        	printf("Index %d: Key = %d, Name = %s, Age = %d\n", i, ht->table[i]->key, ht->table[i]->name, ht->table[i]->age);
+    	} else {
+        	printf("Index %d: Empty\n", i);
+    	}
+	}
+}
+
+int main() {
+	int m = 10; 
+	HashTable ht;
+
+	initHashTable(&ht, m);
+	Employee e1 = {1234, "Alice", 30};
+	Employee e2 = {5678, "Bob", 28};
+	Employee e3 = {9101, "Charlie", 35};
+	Employee e4 = {1213, "Diana", 25};
+	Employee e5 = {3456, "Eve", 40};
+
+	insertEmployee(&ht, m, &e1);
+	insertEmployee(&ht, m, &e2);
+	insertEmployee(&ht, m, &e3);
+	insertEmployee(&ht, m, &e4);
+	insertEmployee(&ht, m, &e5);
+	displayHashTable(&ht, m);
+	int searchKey;
+	printf("\nEnter the key to search: ");
+	scanf("%d", &searchKey);
+
+	Employee* emp = searchEmployee(&ht, m, searchKey);
+	if (emp != NULL) {
+    	printf("Employee Found: Key = %d, Name = %s, Age = %d\n", emp->key, emp->name, emp->age);
+	} else {
+    	printf("Employee with Key %d not found.\n", searchKey);
+	}
+
+	return 0;
+}
